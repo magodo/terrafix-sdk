@@ -11,29 +11,29 @@ import (
 	"github.com/magodo/terrafix-sdk/internal/hclutils"
 )
 
-type ReferenceUpgradeFunction func(version int, traversals []hcl.Traversal) ([]hcl.Traversal, error)
+type ReferenceFixFunction func(version int, traversals []hcl.Traversal) ([]hcl.Traversal, error)
 
-type ReferenceUpgraders map[BlockType]map[string]ReferenceUpgradeFunction
+type ReferenceFixers map[BlockType]map[string]ReferenceFixFunction
 
-type UpgradeConfigReferenceFunction struct {
-	Upgraders ReferenceUpgraders
+type FixConfigReferenceFunction struct {
+	Fixers ReferenceFixers
 }
 
-var _ function.Function = UpgradeConfigReferenceFunction{}
+var _ function.Function = FixConfigReferenceFunction{}
 
-func NewUpgradeConfigReferenceFunction(upgraders ReferenceUpgraders) function.Function {
-	return &UpgradeConfigReferenceFunction{Upgraders: upgraders}
+func NewFixConfigReferenceFunction(fixers ReferenceFixers) function.Function {
+	return &FixConfigReferenceFunction{Fixers: fixers}
 }
 
-func (a UpgradeConfigReferenceFunction) Metadata(_ context.Context, _ function.MetadataRequest, response *function.MetadataResponse) {
-	response.Name = "upgrade_config_references"
+func (a FixConfigReferenceFunction) Metadata(_ context.Context, _ function.MetadataRequest, response *function.MetadataResponse) {
+	response.Name = "terrafix_config_references"
 }
 
-func (a UpgradeConfigReferenceFunction) Definition(_ context.Context, _ function.DefinitionRequest, response *function.DefinitionResponse) {
+func (a FixConfigReferenceFunction) Definition(_ context.Context, _ function.DefinitionRequest, response *function.DefinitionResponse) {
 	response.Definition = function.Definition{
-		Summary:             "Upgrade Terraform config reference origins",
-		Description:         "Upgrade Terraform config reference origins targeting to a provider, resource or data source",
-		MarkdownDescription: "Upgrade Terraform config reference origins targeting to a provider, resource or data source",
+		Summary:             "Fix Terraform config reference origins",
+		Description:         "Fix Terraform config reference origins targeting to a provider, resource or data source",
+		MarkdownDescription: "Fix Terraform config reference origins targeting to a provider, resource or data source",
 		Parameters: []function.Parameter{
 			function.StringParameter{
 				Name:                "block_type",
@@ -63,7 +63,7 @@ func (a UpgradeConfigReferenceFunction) Definition(_ context.Context, _ function
 	}
 }
 
-func (a UpgradeConfigReferenceFunction) Run(ctx context.Context, request function.RunRequest, response *function.RunResponse) {
+func (a FixConfigReferenceFunction) Run(ctx context.Context, request function.RunRequest, response *function.RunResponse) {
 	var blockType, blockName string
 	var version int
 	var rawContents []string
@@ -93,7 +93,7 @@ func (a UpgradeConfigReferenceFunction) Run(ctx context.Context, request functio
 		traversals = append(traversals, tv)
 	}
 
-	if m, ok := a.Upgraders[BlockType(blockType)]; ok {
+	if m, ok := a.Fixers[BlockType(blockType)]; ok {
 		if u, ok := m[blockName]; ok {
 			var err error
 			traversals, err = u(int(version), traversals)

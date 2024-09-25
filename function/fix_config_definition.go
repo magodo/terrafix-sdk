@@ -9,29 +9,29 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/function"
 )
 
-type DefinitionUpgradeFunction func(version int, sbody *hclsyntax.Body, wbody *hclwrite.Body) error
+type DefinitionFixFunction func(version int, sbody *hclsyntax.Body, wbody *hclwrite.Body) error
 
-type DefinitionUpgraders map[BlockType]map[string]DefinitionUpgradeFunction
+type DefinitionFixers map[BlockType]map[string]DefinitionFixFunction
 
-type UpgradeConfigDefinitionFunction struct {
-	Upgraders DefinitionUpgraders
+type FixConfigDefinitionFunction struct {
+	Fixers DefinitionFixers
 }
 
-var _ function.Function = UpgradeConfigDefinitionFunction{}
+var _ function.Function = FixConfigDefinitionFunction{}
 
-func NewUpgradeConfigDefinitionFunction(upgraders DefinitionUpgraders) function.Function {
-	return &UpgradeConfigDefinitionFunction{Upgraders: upgraders}
+func NewFixConfigDefinitionFunction(fixers DefinitionFixers) function.Function {
+	return &FixConfigDefinitionFunction{Fixers: fixers}
 }
 
-func (a UpgradeConfigDefinitionFunction) Metadata(_ context.Context, _ function.MetadataRequest, response *function.MetadataResponse) {
-	response.Name = "upgrade_config_definition"
+func (a FixConfigDefinitionFunction) Metadata(_ context.Context, _ function.MetadataRequest, response *function.MetadataResponse) {
+	response.Name = "terrafix_config_definition"
 }
 
-func (a UpgradeConfigDefinitionFunction) Definition(_ context.Context, _ function.DefinitionRequest, response *function.DefinitionResponse) {
+func (a FixConfigDefinitionFunction) Definition(_ context.Context, _ function.DefinitionRequest, response *function.DefinitionResponse) {
 	response.Definition = function.Definition{
-		Summary:             "Upgrade a Terraform config definition",
-		Description:         "Upgrade a Terraform config definition for a provider, resource or data source",
-		MarkdownDescription: "Upgrade a Terraform config definition for a provider, resource or data source",
+		Summary:             "Fix a Terraform config definition",
+		Description:         "Fix a Terraform config definition for a provider, resource or data source",
+		MarkdownDescription: "Fix a Terraform config definition for a provider, resource or data source",
 		Parameters: []function.Parameter{
 			function.StringParameter{
 				Name:                "block_type",
@@ -58,7 +58,7 @@ func (a UpgradeConfigDefinitionFunction) Definition(_ context.Context, _ functio
 	}
 }
 
-func (a UpgradeConfigDefinitionFunction) Run(ctx context.Context, request function.RunRequest, response *function.RunResponse) {
+func (a FixConfigDefinitionFunction) Run(ctx context.Context, request function.RunRequest, response *function.RunResponse) {
 	var blockType, blockName string
 	var version int64
 	var rawContent string
@@ -83,7 +83,7 @@ func (a UpgradeConfigDefinitionFunction) Run(ctx context.Context, request functi
 	wbody := wf.Body().Blocks()[0].Body()
 
 	var err error
-	if m, ok := a.Upgraders[BlockType(blockType)]; ok {
+	if m, ok := a.Fixers[BlockType(blockType)]; ok {
 		if u, ok := m[blockName]; ok {
 			err = u(int(version), sbody, wbody)
 		}
