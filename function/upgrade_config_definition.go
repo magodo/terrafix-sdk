@@ -29,9 +29,9 @@ func (a UpgradeConfigDefinitionFunction) Metadata(_ context.Context, _ function.
 
 func (a UpgradeConfigDefinitionFunction) Definition(_ context.Context, _ function.DefinitionRequest, response *function.DefinitionResponse) {
 	response.Definition = function.Definition{
-		Summary:             "Upgrade Terraform a config definition",
-		Description:         "Upgrade Terraform a config definition for the provider, resource and data source",
-		MarkdownDescription: "Upgrade Terraform a config definition for the provider, resource and data source",
+		Summary:             "Upgrade a Terraform config definition",
+		Description:         "Upgrade a Terraform config definition for a provider, resource or data source",
+		MarkdownDescription: "Upgrade a Terraform config definition for a provider, resource or data source",
 		Parameters: []function.Parameter{
 			function.StringParameter{
 				Name:                "block_type",

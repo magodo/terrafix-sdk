@@ -32,8 +32,8 @@ func (a UpgradeConfigReferenceFunction) Metadata(_ context.Context, _ function.M
 func (a UpgradeConfigReferenceFunction) Definition(_ context.Context, _ function.DefinitionRequest, response *function.DefinitionResponse) {
 	response.Definition = function.Definition{
 		Summary:             "Upgrade Terraform config reference origins",
-		Description:         "Upgrade Terraform config reference origins targeting to a provider, resource and data source",
-		MarkdownDescription: "Upgrade Terraform config reference origins targeting to a provider, resource and data source",
+		Description:         "Upgrade Terraform config reference origins targeting to a provider, resource or data source",
+		MarkdownDescription: "Upgrade Terraform config reference origins targeting to a provider, resource or data source",
 		Parameters: []function.Parameter{
 			function.StringParameter{
 				Name:                "block_type",
