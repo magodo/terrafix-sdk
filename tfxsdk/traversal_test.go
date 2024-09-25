@@ -1,10 +1,10 @@
-package hclutils_test
+package tfxsdk_test
 
 import (
 	"testing"
 
 	"github.com/hashicorp/hcl/v2"
-	"github.com/magodo/terrafix-sdk/internal/hclutils"
+	"github.com/magodo/terrafix-sdk/tfxsdk"
 	"github.com/zclconf/go-cty/cty"
 )
 
@@ -71,12 +71,12 @@ func TestTraversalMatches(t *testing.T) {
 			var t1 hcl.Traversal
 			if tt.t1 != "" {
 				var err error
-				t1, err = hclutils.ParseTraversal(tt.t1)
+				t1, err = tfxsdk.ParseTraversal(tt.t1)
 				if err != nil {
 					t.Fatal(err.Error())
 				}
 			}
-			got, err := hclutils.TraversalMatches(t1, tt.t2)
+			got, err := tfxsdk.TraversalMatches(t1, tt.t2)
 			if tt.err {
 				if err == nil {
 					t.Fatal("expect error, but none")
@@ -152,13 +152,13 @@ func TestFindAddrInTraversal(t *testing.T) {
 				var err error
 				// The "foo" prefix here is to make the address parsing happy
 				// to ensure the first step is not a number.
-				t1, err = hclutils.ParseTraversal("foo." + tt.t1)
+				t1, err = tfxsdk.ParseTraversal("foo." + tt.t1)
 				if err != nil {
 					t.Fatal(err.Error())
 				}
 				t1 = t1[1:]
 			}
-			got, err := hclutils.FindSubAddr(t1, tt.t2)
+			got, err := tfxsdk.FindSubAddr(t1, tt.t2)
 			if tt.err {
 				if err == nil {
 					t.Fatal("expect error, but none")
@@ -203,7 +203,7 @@ func TestFormatTraversal(t *testing.T) {
 
 	for _, tt := range cases {
 		t.Run(tt.name, func(t *testing.T) {
-			if actual := hclutils.FormatTraversal(tt.input); tt.output != actual {
+			if actual := tfxsdk.FormatTraversal(tt.input); tt.output != actual {
 				t.Fatalf("expect=%s, got=%s", tt.output, actual)
 			}
 		})

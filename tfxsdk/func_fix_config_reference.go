@@ -1,4 +1,4 @@
-package function
+package tfxsdk
 
 import (
 	"context"
@@ -8,7 +8,6 @@ import (
 	"github.com/hashicorp/hcl/v2/hclsyntax"
 	"github.com/hashicorp/terraform-plugin-framework/function"
 	"github.com/hashicorp/terraform-plugin-framework/types/basetypes"
-	"github.com/magodo/terrafix-sdk/internal/hclutils"
 )
 
 type ReferenceFixFunction func(version int, traversals []hcl.Traversal) ([]hcl.Traversal, error)
@@ -106,7 +105,7 @@ func (a FixConfigReferenceFunction) Run(ctx context.Context, request function.Ru
 
 	var updateContents []string
 	for _, tv := range traversals {
-		updateContents = append(updateContents, hclutils.FormatTraversal(tv))
+		updateContents = append(updateContents, FormatTraversal(tv))
 	}
 	response.Error = function.ConcatFuncErrors(response.Result.Set(ctx, updateContents))
 	return

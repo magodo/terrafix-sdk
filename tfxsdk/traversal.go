@@ -1,4 +1,4 @@
-package hclutils
+package tfxsdk
 
 import (
 	"fmt"

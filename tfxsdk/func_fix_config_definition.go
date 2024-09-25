@@ -1,4 +1,4 @@
-package function
+package tfxsdk
 
 import (
 	"context"

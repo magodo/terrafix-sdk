@@ -1,4 +1,4 @@
-package function
+package tfxsdk
 
 type BlockType string
 
