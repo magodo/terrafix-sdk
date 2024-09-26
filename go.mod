@@ -1,6 +1,6 @@
 module github.com/magodo/terrafix-sdk
 
-go 1.23.1
+go 1.23
 
 require (
 	github.com/hashicorp/hcl/v2 v2.22.0
