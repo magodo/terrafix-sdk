@@ -8,6 +8,70 @@ import (
 	"github.com/zclconf/go-cty/cty"
 )
 
+func TestTraversalReplace(t *testing.T) {
+	cases := []struct {
+		name string
+		t    string
+		tpfx string
+		nt   string
+		rt   string
+	}{
+		{
+			name: "not found",
+			t:    "a.b.c",
+			tpfx: "foo",
+			nt:   "bar",
+			rt:   "a.b.c",
+		},
+		{
+			name: "replace at the head",
+			t:    "a.b.c",
+			tpfx: "a",
+			nt:   "z",
+			rt:   "z.b.c",
+		},
+		{
+			name: "replace at the middle",
+			t:    "a.b.c",
+			tpfx: "a.b",
+			nt:   "z",
+			rt:   "a.z.c",
+		},
+		{
+			name: "replace at the rear",
+			t:    "a.b.c",
+			tpfx: "a.b.c",
+			nt:   "z",
+			rt:   "a.b.z",
+		},
+	}
+
+	for _, tt := range cases {
+		t.Run(tt.name, func(t *testing.T) {
+			pt, err := tfxsdk.ParseTraversal(tt.t)
+			if err != nil {
+				t.Fatal(err)
+			}
+			ptpfx, err := tfxsdk.ParseTraversal(tt.tpfx)
+			if err != nil {
+				t.Fatal(err)
+			}
+			pnt, err := tfxsdk.ParseTraversal(tt.nt)
+			if err != nil {
+				t.Fatal(err)
+			}
+			rt, err := tfxsdk.TraversalReplace(pt, ptpfx, pnt)
+			if err != nil {
+				t.Fatal(err)
+			}
+			frt := tfxsdk.FormatTraversal(rt)
+			if tt.rt != frt {
+				t.Fatalf("replaced traversal expects to be %q, got=%q", tt.rt, frt)
+			}
+		})
+	}
+}
+
 func TestTraversalMatches(t *testing.T) {
 	cases := []struct {
 		name string
@@ -93,7 +157,7 @@ func TestTraversalMatches(t *testing.T) {
 	}
 }
 
-func TestFindAddrInTraversal(t *testing.T) {
+func TestFindTraversal(t *testing.T) {
 	cases := []struct {
 		name string
 		t1   string
@@ -158,7 +222,7 @@ func TestFindAddrInTraversal(t *testing.T) {
 				}
 				t1 = t1[1:]
 			}
-			got, err := tfxsdk.FindSubAddr(t1, tt.t2)
+			got, err := tfxsdk.FindSubTraversal(t1, tt.t2)
 			if tt.err {
 				if err == nil {
 					t.Fatal("expect error, but none")
