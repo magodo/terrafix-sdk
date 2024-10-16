@@ -74,8 +74,8 @@ func (a FixConfigDefinitionFunction) Definition(_ context.Context, _ function.De
 			},
 			function.Int64Parameter{
 				Name:                "version",
-				Description:         "The version of the schema, inferred from the Terraform state",
-				MarkdownDescription: "The version of the schema, inferred from the Terraform state",
+				Description:         "The version of the schema",
+				MarkdownDescription: "The version of the schema",
 			},
 			function.StringParameter{
 				Name:                "raw_content",
